@@ -4,12 +4,12 @@
 
 class Graph {
  private:
-  int numVertices;
+  int nVertices;
   std::vector<int>* adj;
  public:
   Graph(int nVertices);
   void addEdge(int src, int dest);
-  int getVertices() {return numVertices;}
+  int getVertices() {return nVertices;}
   void printGraph();
 };
 

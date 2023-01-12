@@ -1,4 +1,4 @@
-UTIL=classes/*.cpp
+UTIL=classes/*.cpp data_structures/*
 MAIN=main.cpp
 BINARY=main
 
