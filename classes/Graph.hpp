@@ -4,13 +4,14 @@
 
 class Graph {
  private:
-  int nVertices;
-  std::vector<int>* adj;
+  int V;
+  std::vector<std::list<int>> adj;
  public:
-  Graph(int nVertices);
+  Graph(int V);
   void addEdge(int src, int dest);
-  int getVertices() {return nVertices;}
+  int getVertices() {return V;}
   void printGraph();
+  void bfs(int key);
 };
 
 /**
