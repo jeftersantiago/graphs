@@ -51,7 +51,7 @@ void Graph::bfs(int start) {
   std::vector<bool> visited(V, false);
   std::vector<int> d(V, 0);
   std::queue<Node> q;
-  
+
   q.push(Node(index, 0));
   visited[index] = true;
 
