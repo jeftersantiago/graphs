@@ -5,31 +5,33 @@
 #include <unordered_set>
 #include <vector>
 
+using namespace std;
+
 class Graph {
 private:
   int V;
-  std::vector<std::vector<int>> adj;
+  vector<vector<int>> adj;
 
 public:
   Graph(int n);
   void addEdge(int i, int j);
-  void dfs(int v, std::vector<bool> visited, std::unordered_set<int> component);
+  void dfs(int v, vector<bool> &visited, unordered_set<int> &component);
   int getVertices();
   void print();
   std::vector<int> neighbors(int v);
+  vector<unordered_set<int>> components();
 };
 Graph::Graph(int n) {
-  this->V = n;
+  this->V = n + 1;
   adj.resize(V);
 }
 
 void Graph::addEdge(int i, int j) { adj[i].push_back(j); }
-std::vector<int> Graph::neighbors(int v) { return adj[v]; }
+vector<int> Graph::neighbors(int v) { return adj[v]; }
 
-void Graph::dfs(int v, std::vector<bool> visited,
-                std::unordered_set<int> component) {
-  component.insert(v);
+void Graph::dfs(int v, vector<bool> &visited, unordered_set<int> &component) {
   visited[v] = true;
+  component.insert(v);
   for (auto w : neighbors(v)) {
     if (!visited[w])
       dfs(w, visited, component);
@@ -37,11 +39,25 @@ void Graph::dfs(int v, std::vector<bool> visited,
 }
 int Graph::getVertices() { return V; }
 
+vector<unordered_set<int>> Graph::components() {
+  vector<unordered_set<int>> components;
+  vector<bool> visited(V, false);
+  for (int v = 1; v < V; v++) {
+    // cout << "vertex = " << v << endl;
+    if (!visited[v]) {
+      unordered_set<int> component;
+      dfs(v, visited, component);
+      components.push_back(component);
+    }
+  }
+  return components;
+}
+
 void Graph::print() {
   for (auto el : adj) {
     for (auto l : el)
-      std::cout << l << "->";
-    std::cout << std::endl;
+      cout << l << "->";
+    cout << endl;
   }
 }
 
@@ -50,36 +66,21 @@ int main() {
   int n;
   int v1, v2;
 
-  std::ifstream infile("./exemplo/case1.in");
+  ifstream infile("./exemplo/case1.in");
   infile >> n;
   Graph g = Graph(n);
   while (infile >> v1 >> v2) {
     g.addEdge(v1, v2);
   }
 
-  g.print();
-
-  std::cout << "-------------- " << std::endl
-            << "      DFS      " << std::endl
-            << "-------------- " << std::endl;
-  std::vector<bool> visited(g.getVertices(), false);
-  std::vector<std::unordered_set<int>> components;
-  for (int i = 0; i < g.getVertices(); i++) {
-    if (!visited[i]) {
-      std::unordered_set<int> component;
-      g.dfs(i, visited, component);
-      /* I think the problem is with the passing of value (maybe reference)*/
-      std::cout << "AQUI" << std::endl;
-      components.push_back(component);
-    }
-  }
-
+  vector<unordered_set<int>> components = g.components();
   for (auto component : components) {
-    std::cout << "Component";
-    for (int v : component)
-      std::cout << v << " ";
-    std::cout << std::endl;
+    // cout << "Component: ";
+    cout << "component.size = " << component.size() << endl;
+    // for (int v : component)
+      // cout << v << " ";
+    // cout << endl;
   }
-
+  cout << "# components = " << components.size() << endl;;
   return 0;
 }
