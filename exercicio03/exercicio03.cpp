@@ -1,7 +1,10 @@
+/**
+   Outputs the number of connected components of an undirected graph
+   and they sizes.
+ **/
+#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <list>
-#include <queue>
 #include <unordered_set>
 #include <vector>
 
@@ -16,34 +19,39 @@ public:
   Graph(int n);
   void addEdge(int i, int j);
   void dfs(int v, vector<bool> &visited, unordered_set<int> &component);
-  int getVertices();
   void print();
   std::vector<int> neighbors(int v);
-  vector<unordered_set<int>> components();
+  vector<unordered_set<int>> connectedComponents();
 };
 Graph::Graph(int n) {
   this->V = n + 1;
   adj.resize(V);
 }
 
-void Graph::addEdge(int i, int j) { adj[i].push_back(j); }
+void Graph::addEdge(int i, int j) {
+  adj[i].push_back(j);
+  adj[j].push_back(i);
+}
 vector<int> Graph::neighbors(int v) { return adj[v]; }
 
 void Graph::dfs(int v, vector<bool> &visited, unordered_set<int> &component) {
   visited[v] = true;
   component.insert(v);
-  for (auto w : neighbors(v)) {
-    if (!visited[w])
+  for (auto w : adj[v]) {
+    if (!visited[w]) {
       dfs(w, visited, component);
+    }
   }
 }
-int Graph::getVertices() { return V; }
 
-vector<unordered_set<int>> Graph::components() {
+/**
+   Runs the DFS algorithm in all nodes of the graph and
+   returns the sets of connected components of the graph.
+**/
+vector<unordered_set<int>> Graph::connectedComponents() {
+  vector<bool> visited(this->V, false);
   vector<unordered_set<int>> components;
-  vector<bool> visited(V, false);
-  for (int v = 1; v < V; v++) {
-    // cout << "vertex = " << v << endl;
+  for (int v = 1; v < this->V; v++) {
     if (!visited[v]) {
       unordered_set<int> component;
       dfs(v, visited, component);
@@ -53,34 +61,32 @@ vector<unordered_set<int>> Graph::components() {
   return components;
 }
 
-void Graph::print() {
-  for (auto el : adj) {
-    for (auto l : el)
-      cout << l << "->";
-    cout << endl;
-  }
-}
-
 int main() {
 
   int n;
   int v1, v2;
 
-  ifstream infile("./exemplo/case1.in");
+  ifstream infile("./example/case1.in");
   infile >> n;
   Graph g = Graph(n);
-  while (infile >> v1 >> v2) {
-    g.addEdge(v1, v2);
-  }
 
-  vector<unordered_set<int>> components = g.components();
-  for (auto component : components) {
-    // cout << "Component: ";
-    cout << "component.size = " << component.size() << endl;
-    // for (int v : component)
-      // cout << v << " ";
-    // cout << endl;
-  }
-  cout << "# components = " << components.size() << endl;;
+  while (infile >> v1 >> v2)
+    g.addEdge(v1, v2);
+
+  vector<unordered_set<int>> components = g.connectedComponents();
+  /* List of components sizes. */
+  vector<int> cs;
+
+  cout << components.size() << endl;
+
+  for (auto component : components)
+    cs.push_back(component.size());
+
+  /* Sorts in reverse order */
+  sort(cs.begin(), cs.end(), greater<int>());
+
+  for (int x : cs)
+    cout << x << endl;
+
   return 0;
 }
