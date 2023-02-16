@@ -1,7 +1,0 @@
-#+title: Learning graphs and C++. Cool graph algorithms.
-
-
-
-
-
-
