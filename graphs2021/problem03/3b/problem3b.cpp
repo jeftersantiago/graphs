@@ -29,6 +29,7 @@ vector<int> Graph::neighbors(int v) { return adj[v]; }
 
 void Graph::dfs(int v, vector<bool> &visited, vector<int> &parent,
                 bool finished) {
+
   visited[v] = true;
   for (auto w : neighbors(v)) {
 

@@ -30,8 +30,6 @@ public:
 Graph::Graph(int n) {
   V = n;
   adj.resize(V);
-  for (int i = 0; i < V; i++)
-    adj[i].resize(V, 0);
 }
 void Graph::addEdge(int i, int j) { adj[i - 1][j - 1] = adj[j - 1][i - 1] = 1; }
 
