@@ -1,4 +1,12 @@
-#+title: Learning graphs and C++. Cool graph algorithms.
+#+title: Graphs
+
+Problems and projects from the course of Computer Modeling in Graphs (SCC0216) at
+University of São Paulo. 
+
+At the folder [[./graphs2021/]] you'll find problems from the 2021 course. 
+
+
+
 
 
 
