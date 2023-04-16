@@ -31,7 +31,8 @@ Graph::Graph(int n) {
   V = n;
   adj.resize(V);
 }
-void Graph::addEdge(int i, int j) { adj[i - 1][j - 1] = adj[j - 1][i - 1] = 1; }
+void Graph::addEdge(int i, int j) {
+  adj[i - 1][j - 1] = adj[j - 1][i - 1] = 1; }
 
 void Graph::print() {
   std::cout << "Adjacency Matrix" << std::endl;

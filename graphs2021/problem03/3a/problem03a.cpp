@@ -19,7 +19,6 @@ public:
   Graph(int n);
   void addEdge(int i, int j);
   void dfs(int v, vector<bool> &visited, unordered_set<int> &component);
-  void print();
   std::vector<int> neighbors(int v);
   vector<unordered_set<int>> connectedComponents();
 };
@@ -71,6 +70,7 @@ int main() {
   Graph g = Graph(n);
 
   while (infile >> v1 >> v2)
+    
     g.addEdge(v1, v2);
 
   vector<unordered_set<int>> components = g.connectedComponents();
