@@ -81,6 +81,10 @@ vector<vector<Node>> generateGraph(int n) {
           are the no need to do other validation besides if it touched right
        side or if it reached the bottom of the matrix.
        **/
+
+      /**
+         OBS: Has to set the relative_position!
+       **/
       if (j + 1 < n) {
         edgeType = grid[i][j].type == -1 || grid[i][j + 1].type == -1 ? 1 : 0;
         auxNode = grid[i][j + 1];
