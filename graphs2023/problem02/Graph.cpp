@@ -2,10 +2,9 @@
 
 vector<Node *> Graph::neighbors(int i) { return nodes[i]->adjacent; }
 
-
 void Graph::addNode(int data, int vertex) {
   Node *newNode = new Node;
-  newNode->data = (Data)data;
+  newNode->data = data;
   newNode->index = vertex;
   nodes.push_back(newNode);
 }
@@ -16,8 +15,8 @@ void Graph::addEdge(int i, int j) {
 }
 
 int Graph::size() { return nodes.size(); }
-void Graph::updateData(int node, Data data) {
-  nodes[node]->data = data;
+void Graph::updateData(int node, int data) {
+  nodes[node]->data = nodes[node]->data + data;
 }
 /* Prints the adjacency list
    If true print the data of each node too.
@@ -32,15 +31,16 @@ void Graph::print(const bool data) {
         cout << adj[j]->data << " ";
       cout << endl;
     }
-  }
-  cout << endl;
-  cout << "Adjacency List: " << endl;
-  for (int i = 0; i < (int)nodes.size(); i++) {
-    cout << "i = " << i << ": ";
-    vector<Node *> adj = neighbors(i);
-    for (int j = 0; j < (int)adj.size(); j++)
-      cout << adj[j]->index << " ";
+  } else {
     cout << endl;
+    cout << "Adjacency List: " << endl;
+    for (int i = 0; i < (int)nodes.size(); i++) {
+      cout << "i = " << i << ": ";
+      vector<Node *> adj = neighbors(i);
+      for (int j = 0; j < (int)adj.size(); j++)
+        cout << adj[j]->index << " ";
+      cout << endl;
+    }
   }
 }
 Graph::~Graph() {
@@ -49,6 +49,7 @@ Graph::~Graph() {
 }
 
 vector<int> Graph::shortest_path(Node *node_start, Node *node_target) {
+  // cout << "Equal nodes" << endl;
   int V = size();
   vector<bool> visited(V, false);
   vector<int> parent(V, -1);
@@ -73,7 +74,7 @@ vector<int> Graph::shortest_path(Node *node_start, Node *node_target) {
     }
     for (Node *neighbor : nodes[current]->adjacent) {
       int v = neighbor->index;
-      Data data = neighbor->data;
+      int data = neighbor->data;
       if ((data != OBSTACLE) && !visited[v]) {
         q.push(v);
         visited[v] = true;

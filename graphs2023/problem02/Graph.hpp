@@ -12,7 +12,7 @@ public:
   void addNode(int data, int vertex);
   void addEdge(int i, int j);
   int size();
-  void updateData(int node, Data data);
+  void updateData(int node, int data);
   /* Prints the adjacency list
      If true print the data of each node too.
   */
