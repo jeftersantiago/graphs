@@ -26,6 +26,7 @@ struct Node {
 class Graph {
 private:
   vector<Node *> nodes;
+
 public:
   vector<Node *> neighbors(int i) { return nodes[i]->adjacent; }
   void addNode(int data, int vertex) {
