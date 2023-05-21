@@ -100,16 +100,7 @@ int main() {
     scanf("%d", &data);
     g.addNode(data, i);
   }
-
   connectGraph(g, n);
-
-  //  if (DEBUG) {
-  //    g.print();
-  //    cout << endl;
-  // print_grid(g, n);
-  //    return 0;
-  //  }
-
   /**
      Le e define a posicao do pacman e fantasma no grid
   **/

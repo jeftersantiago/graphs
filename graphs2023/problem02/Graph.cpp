@@ -49,7 +49,6 @@ Graph::~Graph() {
 }
 
 deque<int> Graph::shortest_path(Node *node_start, Node *node_target) {
-  // cout << "Equal nodes" << endl;
   int V = size();
   vector<bool> visited(V, false);
   vector<int> parent(V, -1);
@@ -66,7 +65,6 @@ deque<int> Graph::shortest_path(Node *node_start, Node *node_target) {
       deque<int> path;
       int vertex = current;
       while (vertex != -1) {
-        //        cout << "v = " << vertex << endl;
         path.push_back(vertex);
         vertex = parent[vertex];
       }
@@ -77,8 +75,6 @@ deque<int> Graph::shortest_path(Node *node_start, Node *node_target) {
     for (Node *neighbor : nodes[current]->adjacent) {
       int v = neighbor->index;
       int data = neighbor->data;
-      //      if (data != OBSTACLE && !visited[v]) {
-      // cout << "v = " << v << "     " << "data = " <<  data << endl;
       if ((data == FREE || data == GHOST) && !visited[v]) {
         q.push(v);
         visited[v] = true;
