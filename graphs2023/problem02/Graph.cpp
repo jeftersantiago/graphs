@@ -68,7 +68,6 @@ deque<int> Graph::shortest_path(Node *node_start, Node *node_target) {
         path.push_back(vertex);
         vertex = parent[vertex];
       }
-      //      cout << endl;
       reverse(path.begin(), path.end());
       return path;
     }

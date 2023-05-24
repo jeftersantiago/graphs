@@ -3,20 +3,10 @@
 
 #define DEBUG 0
 
+void print_path(queue<int> &path);
+
 /* Percorre o grafo e cria as conexões do grid. */
-void connectGraph(Graph &g, int n) {
-  int size = g.size();
-  int row = -1;
-  int col = -1;
-  for (int i = 0; i < size; i++) {
-    row = i / n;
-    col = i % n;
-    if (col < n - 1)
-      g.addEdge(i, i + 1);
-    if (row < n - 1)
-      g.addEdge(i, i + n);
-  }
-}
+void connectGraph(Graph &g, int n);
 
 /**
     Função de transforamção das coordenadas em 2D para 1D em lista linear.
@@ -101,6 +91,15 @@ int main() {
     g.addNode(data, i);
   }
   connectGraph(g, n);
+
+  if (DEBUG) {
+    g.print();
+    cout << endl;
+    cout << "GRID" << endl;
+    print_grid(g, n);
+    cout << endl;
+  }
+
   /**
      Le e define a posicao do pacman e fantasma no grid
   **/
@@ -121,54 +120,172 @@ int main() {
   /* Caso geral: movimentos dos dois personagens */
   while (m > 0) {
     scanf(" %c", &val);
-    //    cout << "(p, gh) = " << "(" << p << ", " << gh << ")" << endl;
     followTheGhost(g, path, p, gh, m, n);
     updateCharacterPosition(g, n, val, gh, GHOST);
     m--;
   }
   /* Caso: fantasma está parado. */
   if (p != gh) {
-    //    cout << "(p, gh) = " << "(" << p << ", " << gh << ")" << endl;
     followTheGhost(g, path, p, gh, m, n);
   }
-  /* Caso: pacman está preso e o fantasma nao parou em cima dele*/
-  if (p == -1)
-    cout << "Não foi possível achar um caminho" << endl;
-  /* Caso: fantasma parou em cima do pacman */
-  else if (path.size() == 1 && p != -1) {
-    // pacman fez zero movimentos .
-    print_result(path, n);
-  } else
-    /* Caso: pacman encontra o fantasma parado. */
-    print_result(path, n);
+  if (!DEBUG) {
+    /* Caso: pacman está preso e o fantasma nao parou em cima dele*/
+    if (p == -1)
+      cout << "Não foi possível achar um caminho" << endl;
+    /* Caso: fantasma parou em cima do pacman */
+    else if (path.size() == 1 && p != -1) {
+      // pacman fez zero movimentos .
+      print_result(path, n);
+    } else
+      /* Caso: pacman encontra o fantasma parado. */
+      print_result(path, n);
+  }
+  //  cout << endl;
+  //  cout << "PATH" << endl;
+  //  print_path(path);
   return 0;
 }
 
+/* Percorre o grafo e cria as conexões do grid. */
+void connectGraph(Graph &g, int n) {
+  int size = g.size();
+  int row = -1;
+  int col = -1;
+  // cout << "size = " << size << endl;
+  for (int i = 0; i < size; i++) {
+    row = i / n;
+    col = i % n;
+    if (col < n - 1) {
+      g.addEdge(i, i + 1);
+    }
+    if (row < n - 1) {
+      g.addEdge(i, i + n);
+    }
+  }
+}
 
+void print_path(queue<int> &path) {
+  int current = -1;
+  while (!path.empty()) {
+    current = path.front();
+    path.pop();
+    cout << current << " ";
+  }
+  cout << endl;
+}
+
+void print_deque(deque<int> &path) {
+  int current = -1;
+  int i = (int)path.size();
+  while (i-- > 0) {
+    current = path.front();
+    path.pop_front();
+    cout << current << " ";
+    path.push_back(current);
+  }
+  cout << endl;
+}
 /**
+   Checa se o fantasma está acima ou abaixo do pacman.
+**/
+
+bool isValidIndex(int i, int n) {
+  if (i > 0 && i < n)
+    return true;
+  return false;
+}
+
 deque<int> findShortestPath(Graph &g, int &p, int &gh, int m, int n) {
+
   int yg = gh / n;
   int xg = gh % n;
 
   int yp = p / n;
   int xp = p % n;
 
-  deque<int> shortest;
+  deque<int> shortest_horizontal;
+  deque<int> shortest_vertical;
 
-  // Caso: fantasma acima do pacman 
-  if(yp < yg) {
+  /** comparar tamanhos **/
+
+  int top = -1;
+  int bottom = -1;
+  int left = -1;
+  int right = -1;
+  if (yp > 0)
+    top = f(xp, yp - 1, n);
+  if (yp < n - 1)
+    bottom = f(xp, yp + 1, n);
+  if (xp > 0)
+    left = f(xp - 1, yp, n);
+  if (xp < n - 1)
+    right = f(xp + 1, yp, n);
+
+  /**
+    Se o pacman está a direita do fantasma
+    então só precisa testar à esquerda e vice-versa
+
+    Se o pacman está abaixo do fantasma
+    então só precisa testar acima e vice versa
+ **/
+  // caso : pacman à direita
+  int size = (int)g.size();
+
+  // pacman à direita do fantasma
+  if (xp > xg) {
+    if (isValidIndex(left, size))
+      if (g.getNode(left)->data != OBSTACLE) {
+        shortest_horizontal = g.shortest_path(g.getNode(left), g.getNode(gh));
+      }
+  } else if (isValidIndex(right, size)) {
+    if (g.getNode(right)->data != OBSTACLE)
+      shortest_horizontal = g.shortest_path(g.getNode(right), g.getNode(gh));
   }
-  return deque<int>();
+  if (yp > yg) {
+    if (isValidIndex(top, size)) {
+      if (g.getNode(top)->data != OBSTACLE) {
+        shortest_vertical = g.shortest_path(g.getNode(top), g.getNode(gh));
+      }
+    }
+  } else if (isValidIndex(bottom, size)) {
+    if (g.getNode(bottom)->data != OBSTACLE) {
+      shortest_vertical = g.shortest_path(g.getNode(bottom), g.getNode(gh));
+    }
+  }
+  shortest_vertical.push_front(p);
+  shortest_horizontal.push_front(p);
+
+  if (DEBUG) {
+
+    cout << "Left = " << left << endl;
+    cout << "Right = " << right << endl;
+    cout << "Top = " << top << endl;
+    cout << "Bottom = " << bottom << endl;
+
+    cout << "p = " << p << endl;
+    cout << "Vertical" << endl;
+    print_deque(shortest_vertical);
+
+    cout << endl;
+    cout << "Horizontal" << endl;
+    print_deque(shortest_horizontal);
+  }
+
+  if ((int)shortest_vertical.size() < (int)shortest_horizontal.size()) {
+    return shortest_vertical;
+  }
+  return shortest_horizontal;
 }
-**/
 
 void followTheGhost(Graph &g, queue<int> &path, int &p, int &gh, int m, int n) {
   // cout << "n = " << n << endl;
-  //  Node *pacman = g.getNode(p);
-  Node *ghost = g.getNode(gh);
 
-  //   deque<int> next_move = findShortestPath(g, p, gh, m, n);
-  deque<int> next_move = g.shortest_path(g.getNode(p), ghost);
+  deque<int> next_move = findShortestPath(g, p, gh, m, n);
+  // deque<int> next_move = g.shortest_path(g.getNode(p), g.getNode(gh));
+
+  //  cout << "Following the ghost" << endl;
+  //  print_deque(next_move);
+  //  deque<int> next_move = g.shortest_path(g.getNode(p), ghost);
 
   /* first is the pacman vertice */
   next_move.pop_front();
