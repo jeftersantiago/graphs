@@ -20,5 +20,4 @@ public:
   deque<int> shortest_path(Node *node_start, Node *node_target);
   ~Graph();
 };
-
 #endif
