@@ -13,7 +13,8 @@ private:
     implementacao do algoritmo de prim
     retorna uma lista de arestas.
    */
-  vector<Edge> mst ();
+  // vector<Edge>
+  int mst ();
   int dijkstra(int target);
 
   int getVertices();
